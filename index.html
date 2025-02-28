@@ -28,9 +28,15 @@
 
     <!-- Main Content -->
     <main>
-      <div id="welcome-message" class="px-5 text-white">
-        <h1 class="text-2xl font-bold">Hello <span id="username">Rico</span></h1>
-        <p class="text-sm">Today you have <span id="task-count">0 task</span></p>
+      <div id="welcome-section" class="px-5 text-white flex items-center justify-between">
+        <div id="welcome-message">
+          <h1 class="text-2xl font-bold">Hello <span id="username">Rico</span></h1>
+          <p class="text-sm">Today you have <span id="task-count">0 task</span></p>
+        </div>
+        <div id="welcome-avatar" class="relative">
+          <div class="bg-white w-16 h-16 rounded-full absolute top-0 left-[50%] translate-x-[-50%] -z-10"></div>
+          <img src="images/boy.png" alt="boy" class="w-20 z-10" />
+        </div>
       </div>
 
     </main>
