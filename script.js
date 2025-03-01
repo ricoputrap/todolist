@@ -116,13 +116,19 @@ const TASKS = [
   }
 ];
 
-  /**
-   * Gets all categories from localStorage and returns them.
-   * If no categories exist in localStorage, stores the default categories
-   * and returns them.
-   *
-   * @returns {Array} An array of category objects.
-   */
+// page names
+const PAGE = {
+  HOME: "home",
+  TASK: "task"
+}
+
+/**
+ * Gets all categories from localStorage and returns them.
+ * If no categories exist in localStorage, stores the default categories
+ * and returns them.
+ *
+ * @returns {Array} An array of category objects.
+ */
 const getCategories = () => {
   // get all categories from localStorage
   const categories = localStorage.getItem("categories");
@@ -136,13 +142,13 @@ const getCategories = () => {
   return CATEGORIES
 }
 
-  /**
-   * Gets all tasks from localStorage and returns them.
-   * If no tasks exist in localStorage, stores the default tasks
-   * and returns them.
-   *
-   * @returns {Array} An array of task objects.
-   */
+/**
+ * Gets all tasks from localStorage and returns them.
+ * If no tasks exist in localStorage, stores the default tasks
+ * and returns them.
+ *
+ * @returns {Array} An array of task objects.
+ */
 const getTasks = () => {
   const tasks = localStorage.getItem("tasks");
 
@@ -193,9 +199,17 @@ const getCategoryElement = (category) => {
     </div>
   `;
 
-  // set click listener
+  // open the Tasks Screen displaying the list of tasks in the category
   categoryElement.addEventListener("click", () => {
-    console.log("Category clicked:", category.name);
+    hideHomeScreen();
+    renderTasks(category.id);
+    reduceScreenBackdrop();
+
+    // add query param in the current URL
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", PAGE.TASK);
+    url.searchParams.set("category-id", category.id);
+    history.pushState(null, null, url);
   })
 
   return categoryElement;
@@ -236,6 +250,98 @@ const renderCategories = () => {
   });
 }
 
-// render elements
-renderWelcomingMessage();
-renderCategories();
+const showHomeScreen = () => {
+  const welcomeSection = document.querySelector("#welcome-section");
+  const categories = document.querySelector("#categories");
+  welcomeSection.classList.remove("hidden");
+  categories.classList.remove("hidden");
+
+  const categoriesContainer = document.querySelector("#categories");
+  categoriesContainer.innerHTML = "";
+}
+
+const hideHomeScreen = () => {
+  const welcomeSection = document.querySelector("#welcome-section");
+  const categories = document.querySelector("#categories");
+  welcomeSection.classList.add("hidden");
+  categories.classList.add("hidden");
+}
+
+const renderTasks = (categoryId) => {
+  const category = getCategories().find((category) => category.id == categoryId);
+
+  // category not found
+  if (!category) return;
+
+  const tasks = getTasks().filter((task) => task.category_id == category.id);
+
+  // tasks not found
+  if (!tasks) return;
+
+  // render tasks header
+  const tasksHeader = document.querySelector("#tasks-header");
+  tasksHeader.innerHTML = `
+    <img src="${category.img}" alt="${category.name}" class="w-12" />
+    <div class="flex-1">
+      <p class="text-sm text-gray-400">${tasks.length} tasks</p>
+      <h1 class="text-xl font-bold">${category.name}</h1>
+    </div>
+  `;
+}
+
+const resetScreenBackdrop = () => {
+  const screenBackdrop = document.querySelector("#screen-backdrop");
+  screenBackdrop.classList.remove("w-[110%]", "h-40");
+  screenBackdrop.classList.add("w-[135%]", "h-80");
+}
+
+const reduceScreenBackdrop = () => {
+  const screenBackdrop = document.querySelector("#screen-backdrop");
+  screenBackdrop.classList.remove("w-[135%]", "h-80");
+  screenBackdrop.classList.add("w-[110%]", "h-40");
+}
+
+/**
+ * Renders the appropriate screen based on the current page and category ID.
+ * 
+ * This function checks query parameters to determine the page and category ID.
+ * Depending on the page, it will display the home screen with welcoming message
+ * and categories, or the task screen with tasks for the selected category.
+ * It also adjusts the screen backdrop size accordingly.
+ *
+ * - On the home page, it shows the home screen, renders the welcoming message,
+ *   categories, and resets the screen backdrop.
+ * - On the task page, it hides the home screen, renders tasks for the given category,
+ *   and reduces the screen backdrop.
+ */
+
+const render = () =>  {
+  const queryParams = new URLSearchParams(window.location.search);
+  const page = queryParams.get("page") || PAGE.HOME;
+  const categoryId = queryParams.get("category-id") || null;
+
+  switch (page) {
+    case PAGE.HOME:
+      showHomeScreen();
+      renderWelcomingMessage();
+      renderCategories();
+      resetScreenBackdrop();
+      break;
+
+    case PAGE.TASK:
+      hideHomeScreen();
+      renderTasks(categoryId);
+      reduceScreenBackdrop();
+      break;
+
+    default:
+      break;
+  }
+}
+
+// rerender when the browser/device back button is clicked
+window.addEventListener("popstate", () => {
+  render();
+});
+
+render();
