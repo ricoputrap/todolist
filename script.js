@@ -3,7 +3,8 @@ const myname = "Rico"
 const username = document.querySelector("#username")
 username.textContent = myname
 
-const categories = [
+// default categories
+const CATEGORIES = [
   {
     id: 1,
     name: "Life",
@@ -26,7 +27,8 @@ const categories = [
   }
 ]
 
-const tasks = [
+// default tasks
+const TASKS = [
   // Life category tasks
   {
     id: 1,
@@ -42,7 +44,7 @@ const tasks = [
   },
   {
     id: 3,
-    name: "Attend yoga class",
+    name: "Morning running",
     is_completed: false,
     category_id: 1
   },
@@ -105,20 +107,66 @@ const tasks = [
     name: "Practice Git commands",
     is_completed: false,
     category_id: 4
+  },
+  {
+    id: 13,
+    name: "Learning Shell Scripting",
+    is_completed: false,
+    category_id: 4
   }
 ];
 
-// indexing category data by id
-const categoryById = new Map(categories.map((category) => [category.id, category]));
+  /**
+   * Gets all categories from localStorage and returns them.
+   * If no categories exist in localStorage, stores the default categories
+   * and returns them.
+   *
+   * @returns {Array} An array of category objects.
+   */
+const getCategories = () => {
+  // get all categories from localStorage
+  const categories = localStorage.getItem("categories");
 
-// calculate total tasks per category
-const totalTaskPerCategory = new Map();
-tasks.forEach((task) => {
+  // return all categories from localStorage
+  if (categories) return JSON.parse(categories);
+
+  // store default categories to localStorage
+  localStorage.setItem("categories", JSON.stringify(CATEGORIES));
+
+  return CATEGORIES
+}
+
+  /**
+   * Gets all tasks from localStorage and returns them.
+   * If no tasks exist in localStorage, stores the default tasks
+   * and returns them.
+   *
+   * @returns {Array} An array of task objects.
+   */
+const getTasks = () => {
+  const tasks = localStorage.getItem("tasks");
+
+  // return all tasks from localStorage
+  if (tasks) return JSON.parse(tasks);
+
+  // store default tasks to localStorage
+  localStorage.setItem("tasks", JSON.stringify(TASKS));
+
+  return TASKS
+}
+
+// indexing category data by id
+const categoryById = new Map(getCategories().map((category) => [category.id, category]));
+
+// group tasks by category
+const tasksPerCategory = new Map();
+getTasks().forEach((task) => {
   const category = categoryById.get(task.category_id);
 
   if (category) {
-    const count = totalTaskPerCategory.get(category) || 0;
-    totalTaskPerCategory.set(category, count + 1);
+    const tasks = tasksPerCategory.get(category.id) || [];
+    tasks.push(task);
+    tasksPerCategory.set(category.id, tasks);
   }
 });
 
@@ -141,7 +189,7 @@ const getCategoryElement = (category) => {
     <img src="${category.img}" alt="${category.name}" class="w-12" />
     <div class="flex-1">
       <h1 class="text-xl font-bold">${category.name}</h1>
-      <p class="text-sm text-gray-400">${totalTaskPerCategory.get(category) || 0} tasks</p>
+      <p class="text-sm text-gray-400">${tasksPerCategory.get(category.id).length || 0} tasks</p>
     </div>
   `;
 
@@ -162,6 +210,7 @@ const getCategoryElement = (category) => {
  * @returns {void}
  */
 const renderWelcomingMessage = () => {
+  const tasks = getTasks();
   const welcomeMessage = document.querySelector("#welcome-message");
 
   welcomeMessage.innerHTML = `
@@ -181,7 +230,7 @@ const renderWelcomingMessage = () => {
 const renderCategories = () => {
   const categoriesContainer = document.querySelector("#categories");
 
-  categories.forEach((category) => {
+  getCategories().forEach((category) => {
     const categoryElement = getCategoryElement(category);
     categoriesContainer.appendChild(categoryElement);
   });
