@@ -4,15 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+  <style>
+    body {
+      font-family: "Inter", sans-serif;
+      
+    }
+  </style>
 </head>
 <body class="w-screen h-screen flex items-center justify-center text-slate-800">
   <div
     id="wrapper"
     class="
       py-8 h-full w-full relative overflow-hidden
-      md:w-[360px] md:h-[720px] md:rounded-[40px]
-      md:border-solid md:border-8 md:border-[#2e2e2e]
+      sm:w-[360px] sm:h-[720px] sm:rounded-[40px]
+      sm:border-solid sm:border-8 sm:border-[#2e2e2e]
     "
   >
     <!-- Screen Backdrop -->
@@ -28,6 +38,8 @@
 
     <!-- Main Content -->
     <main>
+
+      <!-- Welcome Section in HOME SCREEN -->
       <div id="welcome-section" class="px-5 text-white flex items-center justify-between">
         <div id="welcome-message">
           <h1 class="text-2xl font-bold">Hello <span id="username">Rico</span></h1>
@@ -39,9 +51,11 @@
         </div>
       </div>
 
+      <!-- Categories -->
+      <div id="categories" class="mt-10 px-5 flex flex-col gap-y-4"></div>
     </main>
   </div>
 
-  <script src="js/script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
