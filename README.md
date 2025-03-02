@@ -6,15 +6,15 @@ A simple todo list app built with only HTML, Tailwind CSS, and JavaScript.
 
 - [x] 1. Should be able to view the total number of all tasks
 - [x] 2. Should be able to view all categories as well as the number of tasks in each category
-- [ ] 3. Should be able to view all tasks in a specific category
-- [ ] 4. Should be able to add a new task
-- [ ] 5. Should be able to delete a task
+- [x] 3. Should be able to view all tasks in a specific category
+- [x] 4. Should be able to add a new task
+- [x] 5. Should be able to delete a task
 - [ ] 6. Should be able to delete all tasks in a specific category
 
 ## B. Non-Functional Requirements
 
 - [x] 1. The app will be displayed only on a mobile device
-- [ ] 2. The data will be stored in local storage
+- [x] 2. The data will be stored in local storage
 - [ ] 3. The web app should be able to run offline
 - [ ] 4. The web app should be installable on mobile devices (i.e. PWA)
 

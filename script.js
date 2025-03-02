@@ -1,4 +1,4 @@
-const myname = "Rico"
+const myname = "You"
 
 const username = document.querySelector("#username")
 username.textContent = myname
@@ -504,6 +504,7 @@ const render = () =>  {
       renderWelcomingMessage();
       renderCategories();
       resetScreenBackdrop();
+      hideBackButton();
       break;
 
     case PAGE.TASK:
@@ -611,4 +612,9 @@ backBtnElement.addEventListener("click", () => {
   renderCategories();
   resetScreenBackdrop();
   hideBackButton();
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("page", PAGE.HOME);
+  url.searchParams.set("category-id", null);
+  history.pushState(null, null, url);
 })
