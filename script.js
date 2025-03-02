@@ -177,6 +177,40 @@ getTasks().forEach((task) => {
 });
 
 /**
+ * Updates the label of a task with the given ID to visually indicate completion.
+ *
+ * @param {number} taskId - The ID of the task to update.
+ * @param {boolean} [isCompleted=false] - Whether the task is completed.
+ */
+const updateTaskLabelCompletionUI = (taskId, isCompleted = false) => {
+  const taskLabelElement = document.querySelector(`#task-label-${taskId}`);
+  if (!taskLabelElement) return;
+
+  if (isCompleted) {
+    taskLabelElement.classList.add("line-through");
+  } else {
+    taskLabelElement.classList.remove("line-through");
+  }
+}
+
+/**
+ * Toggles the completion status of the task with the given ID.
+ *
+ * @param {number} taskId - The ID of the task to toggle.
+ */
+const toggleTaskCompletion = (taskId) => {
+  const taskIndex = getTasks().findIndex((task) => task.id == taskId);
+  if (taskIndex === -1) return;
+
+  const tasks = getTasks();
+  tasks[taskIndex].is_completed = !tasks[taskIndex].is_completed;
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  // update UI
+  updateTaskLabelCompletionUI(taskId, tasks[taskIndex].is_completed);
+}
+
+/**
  * Creates a DOM element for a given category.
  *
  * This function generates a clickable category element with an image, name,
@@ -186,7 +220,6 @@ getTasks().forEach((task) => {
  * @param {Object} category - The category object containing id, name, and img properties.
  * @returns {HTMLElement} The DOM element representing the category.
  */
-
 const getCategoryElement = (category) => {
   const categoryElement = document.createElement("div")
   categoryElement.id = `category-${category.id}`
@@ -290,15 +323,17 @@ const getTaskElement = (task) => {
   // checkbox
   const inputElement = document.createElement("input");
   inputElement.type = "checkbox";
-  inputElement.checked = task.completed;
+  inputElement.checked = task.is_completed;
   inputElement.addEventListener("change", () => {
-    console.log(inputElement.checked);
+    toggleTaskCompletion(task.id);
   });
 
   // label (task name)
   const labelElement = document.createElement("label");
+  labelElement.id = `task-label-${task.id}`
   labelElement.classList.add("flex-1", "text-sm", "cursor-pointer");
-  if (task.completed) {
+
+  if (task.is_completed) {
     labelElement.classList.add("line-through");
   }
   labelElement.textContent = task.name;
@@ -337,6 +372,7 @@ const renderTasks = (categoryId) => {
   if (!category) return;
 
   const tasks = getTasks().filter((task) => task.category_id == category.id);
+  console.log("+++++ tasks:", tasks)
 
   // tasks not found
   if (!tasks) return;
