@@ -177,6 +177,23 @@ getTasks().forEach((task) => {
 });
 
 /**
+ * Updates the checkbox of a task with the given ID to visually indicate completion.
+ *
+ * @param {number} taskId - The ID of the task to update.
+ * @param {boolean} [isCompleted=false] - Whether the task is completed.
+ */
+const updateTaskCheckboxCompletionUI = (taskId, isCompleted) => {
+  const taskCheckboxElement = document.querySelector(`#task-checkbox-${taskId}`);
+  if (!taskCheckboxElement) return;
+
+  if (isCompleted) {
+    taskCheckboxElement.checked = true;
+  } else {
+    taskCheckboxElement.checked = false;
+  }
+}
+
+/**
  * Updates the label of a task with the given ID to visually indicate completion.
  *
  * @param {number} taskId - The ID of the task to update.
@@ -207,6 +224,7 @@ const toggleTaskCompletion = (taskId) => {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 
   // update UI
+  updateTaskCheckboxCompletionUI(taskId, tasks[taskIndex].is_completed);
   updateTaskLabelCompletionUI(taskId, tasks[taskIndex].is_completed);
 }
 
@@ -323,6 +341,7 @@ const getTaskElement = (task) => {
   // checkbox
   const inputElement = document.createElement("input");
   inputElement.type = "checkbox";
+  inputElement.id = `task-checkbox-${task.id}`
   inputElement.checked = task.is_completed;
   inputElement.addEventListener("change", () => {
     toggleTaskCompletion(task.id);
@@ -330,13 +349,15 @@ const getTaskElement = (task) => {
 
   // label (task name)
   const labelElement = document.createElement("label");
+  labelElement.textContent = task.name;
   labelElement.id = `task-label-${task.id}`
   labelElement.classList.add("flex-1", "text-sm", "cursor-pointer");
-
   if (task.is_completed) {
     labelElement.classList.add("line-through");
   }
-  labelElement.textContent = task.name;
+  labelElement.addEventListener("click", () => {
+    toggleTaskCompletion(task.id);
+  });
 
   // delete button
   const deleteElement = document.createElement("div");
@@ -372,7 +393,6 @@ const renderTasks = (categoryId) => {
   if (!category) return;
 
   const tasks = getTasks().filter((task) => task.category_id == category.id);
-  console.log("+++++ tasks:", tasks)
 
   // tasks not found
   if (!tasks) return;
