@@ -247,6 +247,8 @@ const deleteTask = (taskId, categoryId) => {
  * @returns {HTMLElement} The DOM element representing the category.
  */
 const getCategoryElement = (category, numOfTasks = 0) => {
+  const taskCount = numOfTasks > 1 ? `${numOfTasks} tasks` : `${numOfTasks} task`;
+
   const categoryElement = document.createElement("div")
   categoryElement.id = `category-${category.id}`
   categoryElement.classList.add("px-4", "py-5", "flex", "items-center", "gap-x-4", "bg-white", "cursor-pointer", "shadow-lg", "rounded-md", "transition-all", "hover:-translate-y-1", "hover:shadow-xl")
@@ -254,7 +256,7 @@ const getCategoryElement = (category, numOfTasks = 0) => {
     <img src="${category.img}" alt="${category.name}" class="w-12" />
     <div class="flex-1">
       <h1 class="text-xl font-bold">${category.name}</h1>
-      <p class="text-sm text-gray-400">${numOfTasks} tasks</p>
+      <p class="text-sm text-gray-400">${taskCount}</p>
     </div>
   `;
 
@@ -264,7 +266,7 @@ const getCategoryElement = (category, numOfTasks = 0) => {
     hideHomeScreen();
     renderTasks(category.id);
     reduceScreenBackdrop();
-    showAddTaskButton();
+    // showAddTaskButton();
 
     // add query param in the current URL
     const url = new URL(window.location.href);
@@ -304,6 +306,7 @@ const renderWelcomingMessage = () => {
  */
 const renderCategories = () => {
   const categoriesContainer = document.querySelector("#categories");
+  categoriesContainer.innerHTML = "";
 
   // group tasks by category
   const tasksPerCategory = new Map();
@@ -491,14 +494,14 @@ const render = () =>  {
       renderWelcomingMessage();
       renderCategories();
       resetScreenBackdrop();
-      hideAddTaskButton();
+      // hideAddTaskButton();
       break;
 
     case PAGE.TASK:
       hideHomeScreen();
       renderTasks(categoryId);
       reduceScreenBackdrop();
-      showAddTaskButton();
+      // showAddTaskButton();
       break;
 
     default:
@@ -535,6 +538,43 @@ const hideBlackOverlay = () => {
   blackOverlay.classList.add("hidden");
 }
 
+const addTask = () => {
+  const taskInput = document.querySelector("#task-input");
+  const categoryInput = document.querySelector("#category-input");
+
+  const tasks = getTasks();
+  tasks.push({
+    id: tasks.length + 1,
+    name: taskInput.value,
+    is_completed: false,
+    category_id: Number(categoryInput.value)
+  });
+
+  // update local storage
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  // reset form
+  taskInput.value = "";
+  categoryInput.value = "";
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const page = queryParams.get("page") || PAGE.HOME;
+  const categoryId = queryParams.get("category-id") || null;
+
+  switch (page) {
+    case PAGE.HOME:
+      renderCategories();
+      break;
+
+    case PAGE.TASK:
+      renderTasks(categoryId);
+      break;
+
+    default:
+      break;
+  }
+}
+
 const addTaskButton = document.querySelector("#add-task-button");
 addTaskButton.addEventListener("click", () => {
   showAddTaskForm();
@@ -543,6 +583,13 @@ addTaskButton.addEventListener("click", () => {
 
 const cancelButton = document.querySelector("#cancel-button");
 cancelButton.addEventListener("click", () => {
+  hideAddTaskForm();
+  hideBlackOverlay();
+})
+
+const addButton = document.querySelector("#add-button");
+addButton.addEventListener("click", () => {
+  addTask();
   hideAddTaskForm();
   hideBlackOverlay();
 })
