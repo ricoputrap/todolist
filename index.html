@@ -60,8 +60,11 @@
       <!-- Tasks Section in TASK SCREEN -->
       <div id="tasks-container" class="mt-10 px-6 flex flex-col gap-y-1"></div>
 
+      <!-- Black Overlay -->
+       <div id="black-overlay" class="absolute top-0 left-0 w-full h-full bg-black/50 hidden"></div>
+
       <!-- Floating (+) Button -->
-      <div id="add-task-button" class="absolute bottom-6 right-6">
+      <div id="add-task-button" class="absolute bottom-6 right-6 hidden">
         <button class="bg-blue-500 text-white w-10 h-10 rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:shadow-xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -78,6 +81,67 @@
             />
           </svg>
         </button>
+      </div>
+
+      <!-- Add Task Form -->
+      <div
+        id="add-task-form"
+        class="
+          absolute bottom-[-50%] rounded-t-3xl
+          w-full px-5 py-5 bg-white transition-all duration-500
+        "
+      >
+        <div class="w-full flex flex-col gap-y-2">
+          <!-- Task Input Field -->
+          <div>
+            <label for="task-input" class="text-sm text-slate-400">
+              Task
+            </label>
+            <input
+              id="task-input"
+              type="text"
+              placeholder="e.g. Clean the room"
+              class="text-sm w-full mt-1 px-2 py-3 rounded-lg border border-slate-200"
+            />
+          </div>
+
+          <!-- Category Dropdown -->
+          <div>
+            <label for="category-input" class="text-sm text-slate-400">
+              Category
+            </label>
+            <select
+              id="category-input"
+              class="text-sm w-full mt-1 px-2 py-3 rounded-lg border border-slate-200 cursor-pointer"
+            >
+              <option value="Personal">Personal</option>
+              <option value="Work">Work</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex justify-end gap-x-2 mt-4">
+          <button
+            id="cancel-button"
+            class="
+              text-sm px-4 py-2 rounded-md border border-slate-200
+              cursor-pointer hover:bg-slate-100
+            "
+          >
+            Cancel
+          </button>
+          <button
+            id="add-button"
+            class="
+              text-sm px-4 py-2 rounded-md bg-blue-500 text-white
+              cursor-pointer hover:bg-blue-600
+            "
+          >
+            Add
+          </button>
+        </div>
       </div>
     </main>
   </div>

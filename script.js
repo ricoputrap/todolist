@@ -264,6 +264,7 @@ const getCategoryElement = (category, numOfTasks = 0) => {
     hideHomeScreen();
     renderTasks(category.id);
     reduceScreenBackdrop();
+    showAddTaskButton();
 
     // add query param in the current URL
     const url = new URL(window.location.href);
@@ -455,6 +456,16 @@ const reduceScreenBackdrop = () => {
   screenBackdrop.classList.add("w-[110%]", "h-40");
 }
 
+const showAddTaskButton = () => {
+  const addTaskButton = document.querySelector("#add-task-button");
+  addTaskButton.classList.remove("hidden");
+}
+
+const hideAddTaskButton = () => {
+  const addTaskButton = document.querySelector("#add-task-button");
+  addTaskButton.classList.add("hidden");
+}
+
 /**
  * Renders the appropriate screen based on the current page and category ID.
  * 
@@ -468,7 +479,6 @@ const reduceScreenBackdrop = () => {
  * - On the task page, it hides the home screen, renders tasks for the given category,
  *   and reduces the screen backdrop.
  */
-
 const render = () =>  {
   const queryParams = new URLSearchParams(window.location.search);
   const page = queryParams.get("page") || PAGE.HOME;
@@ -481,12 +491,14 @@ const render = () =>  {
       renderWelcomingMessage();
       renderCategories();
       resetScreenBackdrop();
+      hideAddTaskButton();
       break;
 
     case PAGE.TASK:
       hideHomeScreen();
       renderTasks(categoryId);
       reduceScreenBackdrop();
+      showAddTaskButton();
       break;
 
     default:
@@ -500,3 +512,37 @@ window.addEventListener("popstate", () => {
 });
 
 render();
+
+const showAddTaskForm = () => {
+  const addTaskForm = document.querySelector("#add-task-form");
+  addTaskForm.classList.remove("bottom-[-50%]");
+  addTaskForm.classList.add("bottom-0");
+}
+
+const hideAddTaskForm = () => {
+  const addTaskForm = document.querySelector("#add-task-form");
+  addTaskForm.classList.remove("bottom-0");
+  addTaskForm.classList.add("bottom-[-50%]");
+}
+
+const showBlackOverlay = () => {
+  const blackOverlay = document.querySelector("#black-overlay");
+  blackOverlay.classList.remove("hidden");
+}
+
+const hideBlackOverlay = () => {
+  const blackOverlay = document.querySelector("#black-overlay");
+  blackOverlay.classList.add("hidden");
+}
+
+const addTaskButton = document.querySelector("#add-task-button");
+addTaskButton.addEventListener("click", () => {
+  showAddTaskForm();
+  showBlackOverlay();
+})
+
+const cancelButton = document.querySelector("#cancel-button");
+cancelButton.addEventListener("click", () => {
+  hideAddTaskForm();
+  hideBlackOverlay();
+})
