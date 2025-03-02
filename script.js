@@ -201,6 +201,7 @@ const getCategoryElement = (category) => {
 
   // open the Tasks Screen displaying the list of tasks in the category
   categoryElement.addEventListener("click", () => {
+    showTasksScreen();
     hideHomeScreen();
     renderTasks(category.id);
     reduceScreenBackdrop();
@@ -267,6 +268,68 @@ const hideHomeScreen = () => {
   categories.classList.add("hidden");
 }
 
+const showTasksScreen = () => {
+  const tasksHeader = document.querySelector("#tasks-header");
+  const tasksContainer = document.querySelector("#tasks-container");
+  tasksHeader.classList.remove("hidden");
+  tasksContainer.classList.remove("hidden");
+}
+
+const hideTasksScreen = () => {
+  const tasksHeader = document.querySelector("#tasks-header");
+  const tasksContainer = document.querySelector("#tasks-container");
+  tasksHeader.classList.add("hidden");
+  tasksContainer.classList.add("hidden");
+}
+
+const getTaskElement = (task) => {
+  const taskElement = document.createElement("div");
+  taskElement.id = `task-${task.id}`;
+  taskElement.classList.add("task", "flex", "items-center", "gap-x-2", "p-2", "rounded-lg", "hover:bg-slate-50");
+
+  // checkbox
+  const inputElement = document.createElement("input");
+  inputElement.type = "checkbox";
+  inputElement.checked = task.completed;
+  inputElement.addEventListener("change", () => {
+    console.log(inputElement.checked);
+  });
+
+  // label (task name)
+  const labelElement = document.createElement("label");
+  labelElement.classList.add("flex-1", "text-sm", "cursor-pointer");
+  if (task.completed) {
+    labelElement.classList.add("line-through");
+  }
+  labelElement.textContent = task.name;
+
+  // delete button
+  const deleteElement = document.createElement("div");
+  deleteElement.classList.add("delete-task", "cursor-pointer", "bg-slate-100", "rounded-full", "p-2", "hidden");
+  deleteElement.innerHTML = `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-4 h-4"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+      />
+    </svg>
+  `;
+
+  taskElement.appendChild(inputElement);
+  taskElement.appendChild(labelElement);
+  taskElement.appendChild(deleteElement);
+
+  return taskElement;
+}
+
 const renderTasks = (categoryId) => {
   const category = getCategories().find((category) => category.id == categoryId);
 
@@ -287,6 +350,14 @@ const renderTasks = (categoryId) => {
       <h1 class="text-xl font-bold">${category.name}</h1>
     </div>
   `;
+
+  // render tasks container
+  const tasksContainer = document.querySelector("#tasks-container");
+  tasksContainer.innerHTML = "";
+  tasks.forEach((task) => {
+    const taskElement = getTaskElement(task);
+    tasksContainer.appendChild(taskElement);
+  });
 }
 
 const resetScreenBackdrop = () => {
@@ -322,6 +393,7 @@ const render = () =>  {
 
   switch (page) {
     case PAGE.HOME:
+      hideTasksScreen();
       showHomeScreen();
       renderWelcomingMessage();
       renderCategories();
