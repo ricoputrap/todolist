@@ -285,7 +285,7 @@ const hideTasksScreen = () => {
 const getTaskElement = (task) => {
   const taskElement = document.createElement("div");
   taskElement.id = `task-${task.id}`;
-  taskElement.classList.add("task", "flex", "items-center", "gap-x-2", "p-2", "rounded-lg", "hover:bg-slate-50");
+  taskElement.classList.add("task", "flex", "items-center", "gap-x-3", "p-1");
 
   // checkbox
   const inputElement = document.createElement("input");
@@ -305,7 +305,7 @@ const getTaskElement = (task) => {
 
   // delete button
   const deleteElement = document.createElement("div");
-  deleteElement.classList.add("delete-task", "cursor-pointer", "bg-slate-100", "rounded-full", "p-2", "hidden");
+  deleteElement.classList.add("delete-task", "cursor-pointer", "bg-slate-50", "rounded-full", "p-2");
   deleteElement.innerHTML = `
     <svg
       xmlns="http://www.w3.org/2000/svg"
