@@ -216,7 +216,7 @@ const toggleTaskCompletion = (taskId) => {
   updateTaskLabelCompletionUI(taskId, tasks[taskIndex].is_completed);
 }
 
-const deleteTask = (taskId) => {
+const deleteTask = (taskId, categoryId) => {
   const taskIndex = getTasks().findIndex((task) => task.id == taskId);
   if (taskIndex === -1) return;
 
@@ -226,9 +226,14 @@ const deleteTask = (taskId) => {
   // remove task from localStorage
   localStorage.setItem("tasks", JSON.stringify(tasks));
 
-  // update UI
+  // update UI - remove task
   const taskElement = document.querySelector(`#task-${taskId}`);
   taskElement.remove();
+
+  // update UI - update task count
+  const taskCount = document.querySelector("#category-task-count");
+  const numOfTasks = tasks.filter((task) => task.category_id == categoryId).length;
+  taskCount.innerText = numOfTasks > 1 ? `${numOfTasks} tasks` : `${numOfTasks} task`;
 }
 
 /**
@@ -395,7 +400,7 @@ const getTaskElement = (task) => {
     </svg>
   `;
   deleteElement.addEventListener("click", () => {
-    deleteTask(task.id);
+    deleteTask(task.id, task.category_id);
   });
 
   taskElement.appendChild(inputElement);
@@ -418,10 +423,13 @@ const renderTasks = (categoryId) => {
 
   // render tasks header
   const tasksHeader = document.querySelector("#tasks-header");
+
+  const taskCount = tasks.length > 1 ? `${tasks.length} tasks` : `${tasks.length} task`;
+
   tasksHeader.innerHTML = `
     <img src="${category.img}" alt="${category.name}" class="w-12" />
     <div class="flex-1">
-      <p class="text-sm text-gray-400">${tasks.length} tasks</p>
+      <p id="category-task-count" class="text-sm text-gray-400">${taskCount}</p>
       <h1 class="text-xl font-bold">${category.name}</h1>
     </div>
   `;
