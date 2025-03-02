@@ -204,9 +204,9 @@ const updateTaskLabelCompletionUI = (taskId, isCompleted = false) => {
   if (!taskLabelElement) return;
 
   if (isCompleted) {
-    taskLabelElement.classList.add("line-through");
+    taskLabelElement.classList.add("line-through", "text-gray-400");
   } else {
-    taskLabelElement.classList.remove("line-through");
+    taskLabelElement.classList.remove("line-through", "text-gray-400");
   }
 }
 
@@ -342,6 +342,7 @@ const getTaskElement = (task) => {
   const inputElement = document.createElement("input");
   inputElement.type = "checkbox";
   inputElement.id = `task-checkbox-${task.id}`
+  inputElement.classList.add("cursor-pointer");
   inputElement.checked = task.is_completed;
   inputElement.addEventListener("change", () => {
     toggleTaskCompletion(task.id);
@@ -353,7 +354,7 @@ const getTaskElement = (task) => {
   labelElement.id = `task-label-${task.id}`
   labelElement.classList.add("flex-1", "text-sm", "cursor-pointer");
   if (task.is_completed) {
-    labelElement.classList.add("line-through");
+    labelElement.classList.add("line-through", "text-gray-400");
   }
   labelElement.addEventListener("click", () => {
     toggleTaskCompletion(task.id);
