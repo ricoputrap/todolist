@@ -266,7 +266,7 @@ const getCategoryElement = (category, numOfTasks = 0) => {
     hideHomeScreen();
     renderTasks(category.id);
     reduceScreenBackdrop();
-    // showAddTaskButton();
+    showBackButton();
 
     // add query param in the current URL
     const url = new URL(window.location.href);
@@ -469,6 +469,16 @@ const hideAddTaskButton = () => {
   addTaskButton.classList.add("hidden");
 }
 
+const showBackButton = () => {
+  const backButton = document.querySelector("#back-btn");
+  backButton.classList.remove("hidden");
+}
+
+const hideBackButton = () => {
+  const backButton = document.querySelector("#back-btn");
+  backButton.classList.add("hidden");
+}
+
 /**
  * Renders the appropriate screen based on the current page and category ID.
  * 
@@ -494,14 +504,13 @@ const render = () =>  {
       renderWelcomingMessage();
       renderCategories();
       resetScreenBackdrop();
-      // hideAddTaskButton();
       break;
 
     case PAGE.TASK:
       hideHomeScreen();
       renderTasks(categoryId);
       reduceScreenBackdrop();
-      // showAddTaskButton();
+      showBackButton();
       break;
 
     default:
@@ -592,4 +601,14 @@ addButton.addEventListener("click", () => {
   addTask();
   hideAddTaskForm();
   hideBlackOverlay();
+});
+
+const backBtnElement = document.querySelector("#back-btn");
+backBtnElement.addEventListener("click", () => {
+  hideTasksScreen();
+  showHomeScreen();
+  renderWelcomingMessage();
+  renderCategories();
+  resetScreenBackdrop();
+  hideBackButton();
 })

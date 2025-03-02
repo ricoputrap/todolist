@@ -19,7 +19,7 @@
   <div
     id="wrapper"
     class="
-      py-8 h-full w-full relative overflow-hidden
+      h-full w-full relative overflow-hidden
       sm:w-[360px] sm:h-[720px] sm:rounded-[40px]
       sm:border-solid sm:border-8 sm:border-[#2e2e2e]
     "
@@ -35,30 +35,52 @@
     ></div>
 
     <!-- Top Bar -->
+     <div id="top-bar" class="text-white py-4 px-6">
+      <div id="back-btn" class="cursor-pointer w-6 h-6">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18"
+          />
+        </svg>
+      </div>
+     </div>
 
     <!-- Main Content -->
-    <main>
+    <main class="py-8">
 
       <!-- Welcome Section in HOME SCREEN -->
-      <div id="welcome-section" class="px-5 text-white flex items-center justify-between">
-        <div id="welcome-message">
-          <h1 class="text-2xl font-bold">Hello <span id="username">Rico</span></h1>
-          <p class="text-sm">Today you have <span id="task-count">0 task</span></p>
+      <div id="home-screen">
+        <div id="welcome-section" class="px-5 text-white flex items-center justify-between">
+          <div id="welcome-message">
+            <h1 class="text-2xl font-bold">Hello <span id="username">Rico</span></h1>
+            <p class="text-sm">Today you have <span id="task-count">0 task</span></p>
+          </div>
+          <div id="welcome-avatar" class="relative">
+            <div class="bg-white w-16 h-16 rounded-full absolute top-0 left-[50%] translate-x-[-50%] -z-10"></div>
+            <img src="images/boy.png" alt="boy" class="w-20 z-10" />
+          </div>
         </div>
-        <div id="welcome-avatar" class="relative">
-          <div class="bg-white w-16 h-16 rounded-full absolute top-0 left-[50%] translate-x-[-50%] -z-10"></div>
-          <img src="images/boy.png" alt="boy" class="w-20 z-10" />
-        </div>
+
+        <!-- Categories Section in HOME SCREEN -->
+        <div id="categories" class="mt-10 px-5 flex flex-col gap-y-4"></div>
       </div>
 
-      <!-- Categories Section in HOME SCREEN -->
-      <div id="categories" class="mt-10 px-5 flex flex-col gap-y-4"></div>
+      <div id="task-screen">
+        <!-- Header Section in TASK SCREEN -->
+        <div id="tasks-header" class="px-6 mt-36 flex items-center gap-x-4"></div>
 
-      <!-- Header Section in TASK SCREEN -->
-       <div id="tasks-header" class="px-6 mt-36 flex items-center gap-x-4"></div>
-
-      <!-- Tasks Section in TASK SCREEN -->
-      <div id="tasks-container" class="mt-10 px-6 flex flex-col gap-y-1"></div>
+        <!-- Tasks Section in TASK SCREEN -->
+        <div id="tasks-container" class="mt-10 px-6 flex flex-col gap-y-1"></div>
+      </div>
 
       <!-- Black Overlay -->
        <div id="black-overlay" class="absolute top-0 left-0 w-full h-full bg-black/50 hidden"></div>
