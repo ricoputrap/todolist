@@ -164,18 +164,6 @@ const getTasks = () => {
 // indexing category data by id
 const categoryById = new Map(getCategories().map((category) => [category.id, category]));
 
-// group tasks by category
-const tasksPerCategory = new Map();
-getTasks().forEach((task) => {
-  const category = categoryById.get(task.category_id);
-
-  if (category) {
-    const tasks = tasksPerCategory.get(category.id) || [];
-    tasks.push(task);
-    tasksPerCategory.set(category.id, tasks);
-  }
-});
-
 /**
  * Updates the checkbox of a task with the given ID to visually indicate completion.
  *
@@ -228,6 +216,21 @@ const toggleTaskCompletion = (taskId) => {
   updateTaskLabelCompletionUI(taskId, tasks[taskIndex].is_completed);
 }
 
+const deleteTask = (taskId) => {
+  const taskIndex = getTasks().findIndex((task) => task.id == taskId);
+  if (taskIndex === -1) return;
+
+  const tasks = getTasks();
+  tasks.splice(taskIndex, 1);
+
+  // remove task from localStorage
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  // update UI
+  const taskElement = document.querySelector(`#task-${taskId}`);
+  taskElement.remove();
+}
+
 /**
  * Creates a DOM element for a given category.
  *
@@ -238,7 +241,7 @@ const toggleTaskCompletion = (taskId) => {
  * @param {Object} category - The category object containing id, name, and img properties.
  * @returns {HTMLElement} The DOM element representing the category.
  */
-const getCategoryElement = (category) => {
+const getCategoryElement = (category, numOfTasks = 0) => {
   const categoryElement = document.createElement("div")
   categoryElement.id = `category-${category.id}`
   categoryElement.classList.add("px-4", "py-5", "flex", "items-center", "gap-x-4", "bg-white", "cursor-pointer", "shadow-lg", "rounded-md", "transition-all", "hover:-translate-y-1", "hover:shadow-xl")
@@ -246,7 +249,7 @@ const getCategoryElement = (category) => {
     <img src="${category.img}" alt="${category.name}" class="w-12" />
     <div class="flex-1">
       <h1 class="text-xl font-bold">${category.name}</h1>
-      <p class="text-sm text-gray-400">${tasksPerCategory.get(category.id).length || 0} tasks</p>
+      <p class="text-sm text-gray-400">${numOfTasks} tasks</p>
     </div>
   `;
 
@@ -296,8 +299,20 @@ const renderWelcomingMessage = () => {
 const renderCategories = () => {
   const categoriesContainer = document.querySelector("#categories");
 
+  // group tasks by category
+  const tasksPerCategory = new Map();
+  getTasks().forEach((task) => {
+    const category = categoryById.get(task.category_id);
+
+    if (category) {
+      const tasks = tasksPerCategory.get(category.id) || [];
+      tasks.push(task);
+      tasksPerCategory.set(category.id, tasks);
+    }
+  });
+
   getCategories().forEach((category) => {
-    const categoryElement = getCategoryElement(category);
+    const categoryElement = getCategoryElement(category, tasksPerCategory.get(category.id)?.length);
     categoriesContainer.appendChild(categoryElement);
   });
 }
@@ -379,6 +394,9 @@ const getTaskElement = (task) => {
       />
     </svg>
   `;
+  deleteElement.addEventListener("click", () => {
+    deleteTask(task.id);
+  });
 
   taskElement.appendChild(inputElement);
   taskElement.appendChild(labelElement);
